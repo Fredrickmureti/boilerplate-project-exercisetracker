@@ -37,7 +37,7 @@
     const exerciseForm = document.getElementById("exercise-form");
 
     exerciseForm.addEventListener("submit", () => {
-      const userId = document.getElementById("uid").value;
+      const userId = document.getElementById("uid").value; // Get the user ID from the form
       exerciseForm.action = `/api/users/${userId}/exercises`;
 
       exerciseForm.submit();

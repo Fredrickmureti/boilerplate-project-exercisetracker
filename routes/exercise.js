@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const router = express.Router();
 const User = require('../models/user');
 const Exercise = require('../models/exercise');
@@ -6,27 +7,30 @@ const Exercise = require('../models/exercise');
 // Add a new exercise
 router.post('/:_id/exercises', async (req, res) => {
   try {
-    const { _id } = req.params;
-    const { description, duration, date } = req.body;
+    const { userId } = req.params; // extract the id from the request params
+    const { description, duration, date } = req.body; //extract the decsription, duration and date from the request body
+
+    //validate the _id
+    if (!mongoose.Types.ObjectId.isValid(userId)) { }
 
     // Check if the user exists
-    const user = await User.findById(_id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
     }
 
-    // Create new exercise entry
+    // Create new exercise entry if the user exists
     const newExercise = new Exercise({
-      userId: _id,
-      description,
-      duration,
+      userId: user._id, // access the user id from the user object
+      description: description,
+      duration: duration,
       date: date ? new Date(date) : new Date()
     });
 
     const savedExercise = await newExercise.save();
 
     res.json({
-      _id: user._id,
+      _id: _id,
       username: user.username,
       description: savedExercise.description,
       duration: savedExercise.duration,
